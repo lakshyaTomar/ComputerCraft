@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { 
@@ -60,6 +61,9 @@ const PCBuilderWizard = () => {
   const recommendation = recommendationMutation.data
     ? (recommendationMutation.data as unknown as PCBuildRecommendation)
     : null;
+    
+  // Ensure recommendation has components or provide a default empty array
+  const components = recommendation?.components || [];
 
   const handlePurposeSelect = (selectedPurpose: string) => {
     setPurpose(selectedPurpose);
@@ -428,7 +432,7 @@ const PCBuilderWizard = () => {
                 Recommended Components
               </h4>
               <div className="space-y-4">
-                {recommendation.components.map((component, index) => (
+                {components.map((component, index) => (
                   <div
                     key={index}
                     className="border border-gray-200 rounded-lg"
@@ -533,7 +537,7 @@ const PCBuilderWizard = () => {
                     {recommendation.purpose} PC Build
                   </h4>
                   <div className="text-sm text-gray-600 space-y-2">
-                    {recommendation.components.map((component, index) => (
+                    {components.map((component, index) => (
                       <p key={index}>• {component.name}</p>
                     ))}
                   </div>
@@ -610,7 +614,7 @@ const PCBuilderWizard = () => {
               >
                 Back to Components
               </Button>
-              <Link href="/cart">
+              <Link to="/cart">
                 <Button>
                   Go to Cart & Checkout
                 </Button>
