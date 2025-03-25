@@ -119,8 +119,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         buildId: savedBuild.id,
         ...recommendation
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("PC Builder recommendation error:", error);
+      
+      // Check for rate limit error
+      if (error?.message === 'API_RATE_LIMIT_EXCEEDED') {
+        return res.status(429).json({ 
+          message: "OpenAI API rate limit reached. Please try again later or check your API key quota.",
+          error: "RATE_LIMIT_EXCEEDED" 
+        });
+      }
+      
       res.status(500).json({ message: "Error generating PC build recommendation" });
     }
   });
@@ -183,7 +192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Update quantity instead of creating new item
         const updatedItem = await storage.updateCartItemQuantity(
           existingItem.id,
-          existingItem.quantity + validatedData.quantity
+          existingItem.quantity + (validatedData.quantity || 1)
         );
         
         return res.json(updatedItem);

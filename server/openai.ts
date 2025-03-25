@@ -70,7 +70,8 @@ export async function generatePCBuildRecommendation(
       response_format: { type: "json_object" },
     });
 
-    const result = JSON.parse(response.choices[0].message.content);
+    const content = response.choices[0].message.content || '{}';
+    const result = JSON.parse(content);
     
     // Transform the AI response into our expected format
     const recommendation: PCBuildRecommendation = {
@@ -83,9 +84,15 @@ export async function generatePCBuildRecommendation(
     };
 
     return recommendation;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating PC build recommendation:", error);
-    // Fallback recommendations if OpenAI API fails
+    
+    // Check for rate limit error
+    if (error?.status === 429 || (error?.error && error?.error?.type === 'insufficient_quota')) {
+      throw new Error('API_RATE_LIMIT_EXCEEDED');
+    }
+    
+    // Fallback recommendations for other types of errors
     return {
       purpose: requirements.purpose,
       analysis: "Unable to generate AI recommendation. Here are some general recommendations based on your requirements.",
