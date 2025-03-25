@@ -49,12 +49,21 @@ const PCBuilderWizard = () => {
     onSuccess: () => {
       setStep(3);
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to get recommendations. Please try again.",
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      if (error.response?.status === 429 || error.response?.data?.error === "RATE_LIMIT_EXCEEDED") {
+        toast({
+          title: "API Rate Limit Exceeded",
+          description: "The OpenAI API rate limit has been reached. Please try again later or check your API key quota.",
+          variant: "destructive",
+          duration: 10000, // Show for 10 seconds
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to get recommendations. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -382,6 +391,20 @@ const PCBuilderWizard = () => {
                 />
               </div>
             </div>
+            {recommendationMutation.isError && (
+              <div className="mt-6 bg-destructive/10 border border-destructive text-destructive p-4 rounded-md">
+                <div className="flex items-center">
+                  <Info className="h-5 w-5 mr-2" />
+                  <p className="font-medium">Error getting recommendations</p>
+                </div>
+                <p className="mt-1 text-sm">
+                  {recommendationMutation.error?.response?.data?.error === "RATE_LIMIT_EXCEEDED"
+                    ? "The OpenAI API rate limit has been reached. Please try again later or check your API key quota."
+                    : "We encountered an issue generating your recommendations. Please try again."}
+                </p>
+              </div>
+            )}
+            
             <div className="mt-8 flex justify-between">
               <Button
                 variant="outline"
@@ -393,9 +416,17 @@ const PCBuilderWizard = () => {
                 onClick={getRecommendations}
                 disabled={recommendationMutation.isPending}
               >
-                {recommendationMutation.isPending
-                  ? "Getting Recommendations..."
-                  : "Get Recommendations"}
+                {recommendationMutation.isPending ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Getting Recommendations...
+                  </span>
+                ) : (
+                  "Get Recommendations"
+                )}
               </Button>
             </div>
           </div>

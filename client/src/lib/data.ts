@@ -84,14 +84,12 @@ export async function getProductById(id: number): Promise<Product | null> {
 // PC Builder Functions
 export async function getPCBuildRecommendations(
   requirements: PCBuilderRequirements
-): Promise<PCBuildRecommendation | null> {
-  try {
-    const response = await apiRequest("POST", "/api/pc-builder/recommend", requirements);
-    return response;
-  } catch (error) {
-    console.error("Error getting PC build recommendations:", error);
-    return null;
-  }
+): Promise<PCBuildRecommendation> {
+  // We're not handling errors here because we want them to propagate
+  // to the UI component so they can be properly displayed there.
+  // The error handling will be done in the PCBuilderWizard component.
+  const response = await apiRequest("POST", "/api/pc-builder/recommend", requirements);
+  return response;
 }
 
 export async function getPCBuildById(buildId: number): Promise<PCBuildRecommendation | null> {
