@@ -32,5 +32,23 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
+    cssMinify: true,
+  },
+  css: {
+    postcss: "./postcss.config.js",
+  },
+  server: {
+    port: 5000,
+    strictPort: true,
+    hmr: {
+      overlay: true,
+      clientPort: 5000,
+    },
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
   },
 });
