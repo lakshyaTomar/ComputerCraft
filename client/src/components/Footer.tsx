@@ -102,7 +102,7 @@ const Footer = () => {
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mr-2 text-gray-400" />
                 <span className="text-gray-400">
-                  123 Tech Street, Silicon Valley, CA
+                  Inderprastha Engineering college, Ghaziabad.
                 </span>
               </li>
               <li className="flex items-start">
@@ -111,7 +111,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <Phone className="h-5 w-5 mr-2 text-gray-400" />
-                <span className="text-gray-400">(800) 555-TECH</span>
+                <span className="text-gray-400">(91) 9999999999</span>
               </li>
             </ul>
           </div>

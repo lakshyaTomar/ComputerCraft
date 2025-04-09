@@ -38,15 +38,15 @@ export default defineConfig({
     postcss: "./postcss.config.js",
   },
   server: {
-    port: 5000,
+    port: 5001,
     strictPort: true,
     hmr: {
       overlay: true,
-      clientPort: 5000,
+      clientPort: 5001,
     },
     proxy: {
       "/api": {
-        target: "http://localhost:5000",
+        target: "http://localhost:5001",
         changeOrigin: true,
       },
     },
